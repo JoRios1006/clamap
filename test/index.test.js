@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-const main = require("./index");
+const main = require("../index");
 const testArray = [""];
 test("Not empty", () => {
     expect(main(testArray)).not.beNull;

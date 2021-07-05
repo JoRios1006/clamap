@@ -1,7 +1,7 @@
 const main = (argv) => {
     const
         argMap = new Map(),
-        freeArguments = [],
+        freeArguments = new Array(),
         // Regex Stuff
         eqSymbol = /(--.*)=(.*)/, //RegExp Matchs --value=value
         eqSymbolTest = x => eqSymbol.test(x),
@@ -9,12 +9,12 @@ const main = (argv) => {
         resultKey = x => eqSymbolExe(x)[1], // when grouping --(this-value)=... is at index 1
         resultValue = x => eqSymbolExe(x)[2], // and --...=(this-value) is at index 2
         //End Regex stuff
-        nextOf = (arr) => (x) => arr.indexOf(x) + 1,
+        nextOf = arr => x => arr.indexOf(x) + 1,
         nO = nextOf(argv), // Partial aplication of nextOne for argv array
         matchHyphen = x => typeof x === "string" && x.slice(0,1) === "-",
         matchDoubleHyphen = x =>  typeof x === "string" && x.slice(0,2) === "--",
         //90% on the program itself is below
-        filterFunc = (x) =>
+        filterFunc = x =>
             typeof x !== "string"
                 ? undefined
                 : eqSymbolTest(x)
@@ -32,4 +32,5 @@ const main = (argv) => {
     argMap.set("_", freeArguments); // Every element that don't fall into previous cat. goes to this array, and then is bind to "_"
     return argMap;
 };
+console.log(main(["-a", "beep", "-b" ,"boop"]));
 module.exports = main;
