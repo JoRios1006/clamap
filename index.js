@@ -1,36 +1,34 @@
-const main = (argv) => {
+const clamap = (argv) => {
     const
         argMap = new Map(),
         freeArguments = new Array(),
         // Regex Stuff
         eqSymbol = /(--.*)=(.*)/, //RegExp Matchs --value=value
-        eqSymbolTest = x => eqSymbol.test(x),
-        eqSymbolExe = x => eqSymbol.exec(x),
+        eqSymbolTest = x => eqSymbol.test(x), // Check Presence of --key=value type argument
+        eqSymbolExe = x => eqSymbol.exec(x), // result ["match", "key", "value"]
         resultKey = x => eqSymbolExe(x)[1], // when grouping --(this-value)=... is at index 1
         resultValue = x => eqSymbolExe(x)[2], // and --...=(this-value) is at index 2
-        //End Regex stuff
-        nextOf = arr => x => arr.indexOf(x) + 1,
-        nO = nextOf(argv), // Partial aplication of nextOne for argv array
+        //End Regex stuff (Everything will be ok)
         matchHyphen = x => typeof x === "string" && x.slice(0,1) === "-",
         matchDoubleHyphen = x =>  typeof x === "string" && x.slice(0,2) === "--",
+        matchHyphen_notDoubleHyphen_moreOneArg = x => matchHyphen(x) && !(matchDoubleHyphen(x)) && x.length > 2, // in short, this: "-abc"
+        argsMinusHyphen = x => x.split("").slice(1), // "-abc" => ["a", "b", "c"]
         //90% on the program itself is below
-        filterFunc = x =>
+        filterFunc = (x, index, arr) =>
             typeof x !== "string"
                 ? undefined
                 : eqSymbolTest(x)
-                // Check Presence of --key=value type
                     ? argMap.set(resultKey(x), resultValue(x))
-                    : matchHyphen(x) && matchHyphen(argv[nO(x)])
+                    : matchHyphen(x) && matchHyphen(arr[index + 1])
                     // Check if --value --value cond is true
                         ? argMap.set(x, true)
-                        : matchHyphen(x) && !(matchDoubleHyphen(x)) && x.length > 2
-                            ? x.split("").slice(1).forEach(xs => argMap.set(xs, true))
+                        : matchHyphen_notDoubleHyphen_moreOneArg(x)
+                            ? argsMinusHyphen(x).forEach(xs => argMap.set(xs, true))
                             : matchHyphen(x) || matchDoubleHyphen(x)
-                                ? argMap.set(x, argv[nO(x)])
+                                ? argMap.set(x, arr[index + 1])
                                 : freeArguments.push(x);
     argv.forEach(filterFunc); // For each element run the filter function
     argMap.set("_", freeArguments); // Every element that don't fall into previous cat. goes to this array, and then is bind to "_"
     return argMap;
 };
-console.log(main(["-a", "beep", "-b" ,"boop"]));
-module.exports = main;
+module.exports = clamap;
