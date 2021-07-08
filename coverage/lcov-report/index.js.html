@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.06% </span>
+                <span class="strong">97.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/34</span>
+                <span class='fraction'>36/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96% </span>
+                <span class="strong">96.43% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>24/25</span>
+                <span class='fraction'>27/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>11/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.06% </span>
+                <span class="strong">97.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>33/34</span>
+                <span class='fraction'>36/37</span>
             </div>
         
             
@@ -91,7 +91,10 @@
 <a name='L32'></a><a href='#L32'>32</a>
 <a name='L33'></a><a href='#L33'>33</a>
 <a name='L34'></a><a href='#L34'>34</a>
-<a name='L35'></a><a href='#L35'>35</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
@@ -108,29 +111,33 @@
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const clamap = (argv) =&gt; {
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const clamap = (argv_) =&gt; {
     const
         argMap = new Map(),
         freeArguments = new Array(),
+        argv = argv_.slice(2),
         // Regex Stuff
-        eqSymbol = /(--.*)=(.*)/, //RegExp Matchs --value=value
+        eqSymbol = /^--(.*)=(.*)$/, //RegExp Matchs --value=value
         eqSymbolTest = x =&gt; eqSymbol.test(x), // Check Presence of --key=value type argument
         eqSymbolExe = x =&gt; eqSymbol.exec(x), // result ["match", "key", "value"]
         resultKey = x =&gt; eqSymbolExe(x)[1], // when grouping --(this-value)=... is at index 1
@@ -140,6 +147,7 @@
         matchDoubleHyphen = x =&gt;  typeof x === "string" &amp;&amp; x.slice(0,2) === "--",
         matchHyphen_notDoubleHyphen_moreOneArg = x =&gt; matchHyphen(x) &amp;&amp; !(matchDoubleHyphen(x)) &amp;&amp; x.length &gt; 2, // in short, this: "-abc"
         argsMinusHyphen = x =&gt; x.split("").slice(1), // "-abc" =&gt; ["a", "b", "c"]
+        removeHyphen = x =&gt; x.split("").slice(matchDoubleHyphen(x) ? 2 : 1).join(""),
         //90% on the program itself is below
         filterFunc = (x, index, arr) =&gt;
 <span class="branch-0 cbranch-no" title="branch not covered" >            typeof x !== "string"</span>
@@ -148,14 +156,15 @@
                     ? argMap.set(resultKey(x), resultValue(x))
                     : matchHyphen(x) &amp;&amp; matchHyphen(arr[index + 1])
                     // Check if --value --value cond is true
-                        ? argMap.set(x, true)
+                        ? argMap.set(removeHyphen(x), true)
                         : matchHyphen_notDoubleHyphen_moreOneArg(x)
                             ? argsMinusHyphen(x).forEach(xs =&gt; argMap.set(xs, true))
                             : matchHyphen(x) || matchDoubleHyphen(x)
-                                ? argMap.set(x, arr[index + 1])
+                                ? argMap.set(removeHyphen(x) , arr[index + 1])
                                 : freeArguments.push(x);
     argv.forEach(filterFunc); // For each element run the filter function
     argMap.set("_", freeArguments); // Every element that don't fall into previous cat. goes to this array, and then is bind to "_"
+    // console.log(argMap);
     return argMap;
 };
 module.exports = clamap;
@@ -166,7 +175,7 @@ module.exports = clamap;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Jul 06 2021 15:26:26 GMT-0300 (hora estándar de Argentina)
+                at Thu Jul 08 2021 16:47:31 GMT-0300 (hora estándar de Argentina)
             </div>
         </div>
         <script src="prettify.js"></script>

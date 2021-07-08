@@ -6,21 +6,21 @@ Parse arguments to a Map Object.
  Map(3) {
   '-a' => 'foo',
   '-b' => 'bar',
-  '_' => [] 
+  '_' => ['foo', 'bar'] 
  }
 ```
 
-
-# Usage
+## Usage
 ```
 import clamap from "clamap"
-const parsed = clamap(argv)
+const parsed = clamap(process.argv)
  OR
-const parsed = require("clamap")(argv)
+const parsed = require("clamap")(process.argv)
 
 console.log(parsed.get("-a")) // "foo"
 console.log(parsed.get("b")) // "bar"
 ```
+See test/ and examples/ for more documentation
 
 
 
