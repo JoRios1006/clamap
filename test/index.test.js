@@ -23,6 +23,7 @@ test("Free arguments go free arg array", () => {
 });
 test("Free flags are true", () => {
     expect(clamap(["", "","--flag","--anotherFlag"]).get("flag")).toBe(true);
+    expect(clamap(["", "", "--flag", "--anotherFlag"]).get("anotherFlag")).toBe(true);
 });
 test(`Argments of type -ABC return:
       A => true

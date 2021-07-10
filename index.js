@@ -24,11 +24,14 @@ const clamap = (argv_) => {
                     : matchHyphen(x) && matchHyphen(arr[index + 1])
                     // Check if --value --value cond is true
                         ? argMap.set(removeHyphen(x), true)
-                        : matchHyphen_notDoubleHyphen_moreOneArg(x)
-                            ? argsMinusHyphen(x).forEach(xs => argMap.set(xs, true))
-                            : matchHyphen(x) || matchDoubleHyphen(x)
-                                ? argMap.set(removeHyphen(x) , arr[index + 1])
-                                : freeArguments.push(x);
+                        : matchDoubleHyphen(x) && !(arr[index + 1])
+                        // Check if after --value is undefined (a.k.a doesn't exists)
+                            ? argMap.set(removeHyphen(x), true)
+                            : matchHyphen_notDoubleHyphen_moreOneArg(x)
+                                ? argsMinusHyphen(x).forEach(xs => argMap.set(xs, true))
+                                : matchHyphen(x) || matchDoubleHyphen(x)
+                                    ? argMap.set(removeHyphen(x) , arr[index + 1])
+                                    : freeArguments.push(x);
     argv.forEach(filterFunc); // For each element run the filter function
     argMap.set("_", freeArguments); // Every element that don't fall into previous cat. goes to this array, and then is bind to "_"
     // console.log(argMap);
