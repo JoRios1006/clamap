@@ -8,7 +8,7 @@
   },
   "name": "clamap",
   "description": "Parse Command Line Arguments to a Map Object. CLA => MAP",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "index.js",
   "directories": {
     "example": "examples",
